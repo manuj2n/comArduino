@@ -11,9 +11,13 @@ listVeille=[]
 
 def OuvreAgenda():
 	f = open(fichier, 'r')
-	chaine = f.readline()
-	print(chaine)
-	f.close()
+	while True :
+		chaine = f.readline()
+		print(chaine)
+		if ("" == chaine):
+			print("fin de fichier")
+			f.close()
+			break
 
 OuvreAgenda()
 ser = serial.Serial('/dev/ttyS0', 9600, dsrdtr=0)
