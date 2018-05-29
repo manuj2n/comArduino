@@ -27,6 +27,7 @@ def OuvreAgenda():
 			break
 		print(chaine)
 
+
 OuvreAgenda()
 ser = serial.Serial('/dev/ttyS0', 9600, dsrdtr=0)
 line = 'bonjour\n'
