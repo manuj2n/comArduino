@@ -1,14 +1,13 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# comArduino.py
+# comArduino 
 
 import time
 import serial
 
 #heureTmp = datetime.time(0, 0, 0)
 fichier='agenda.txt'
-heureVeilleProchaine =  time.strptime("00:00:00", "%H:%M:%S")
 
 def OuvreAgenda():
 	f = open(fichier, 'r')
@@ -21,13 +20,16 @@ def OuvreAgenda():
                         break
 		if (chaine[0] == "V"):
 			print(chaine[1:3])
-			heureVeilleProchaine = time.strptime(chaine[1:5], '%H%M')
+			#heureVeilleProchaine.replace(hour=int(chaine[1:3]))
+			#heureVeilleProchaine = datetime.strptime(chaine[1:5], '%H:%M')
 
 
 heureActuel = time.localtime()
+heureVeilleProchaine.clock_settime(CLOCK_REALTIME,time(23,01,01))
 print("heureA",heureActuel)
-OuvreAgenda()
+#OuvreAgenda()
 print("heureVP",heureVeilleProchaine)
+
 # chercher heureProchaineVeille
 # 
 # si heureCourante < heureProchaineVeille
