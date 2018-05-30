@@ -12,6 +12,9 @@ hPV = datetime.time(0, 0, 0)
 dureeVeille = 0
 fichier = 'agenda.txt'
 
+def calculVeille(heures, minutes):
+	duree = (heures * 3600) + (minutes * 60)
+	return duree
 
 def OuvreAgenda():
 	f = open(fichier, 'r')
@@ -27,8 +30,8 @@ def OuvreAgenda():
 			#print(heure, min)
 			heureDureeVeille = chaine[7:9]
 			minDureeVeille = chaine[10:12]
-			dureeVeille = (int(heureDureeVeille) * 3600) + (int(minDureeVeille) * 60)
-			print("hDV et mDV en secondes", heureDureeVeille, minDureeVeille, dureeVeille)
+			dureeVeille = calculVeille(int(heureDureeVeille), int(minDureeVeille))
+			print("Duree de Veille en secondes", heureDureeVeille, minDureeVeille, dureeVeille)
 			hT = datetime.datetime(hC.year, hC.month, hC.day, int(heure), int(min))
 			print("heure Tempo", hT)
 			print("Temps d'attente pour ma veille", hT - hC)
@@ -50,8 +53,10 @@ while True:
 		print("heure de veille", hPV)
 		time.sleep(5)
 	else:  		
-		time.sleep(5)
+		print
 		print("transmission vers l'arduino")
+		print("duree de la veille",dureeVeille)
+		time.sleep(5)
 		# si heureCourante > heure
 		# ProchaineVeille
 		#	transmettre duree de veille
