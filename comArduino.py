@@ -18,7 +18,6 @@ def OuvreAgenda():
 		#print(chaine)
 		if (chaine == ""):
 			f.close()
-			print("fin de fichier")
 			break
 		if (chaine[0] == "V"):
 			heure = chaine[1:3]
@@ -27,6 +26,7 @@ def OuvreAgenda():
 			hT = datetime.datetime(hC.year, hC.month, hC.day, int(heure), int(min))
 			print("heure Tempo",hT)
 			if (hT > hC):
+				f.close()
 				return hT
 
 hC = datetime.datetime.now()
