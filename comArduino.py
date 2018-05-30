@@ -1,45 +1,47 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# comArduino 
+# comArduino
 
+import datetime
 import time
-import serial
+#import serial
 
-#heureTmp = datetime.time(0, 0, 0)
+hT = datetime.time(0, 0, 0)
+hPV = datetime.time(0,0,0)
 fichier='agenda.txt'
 
 def OuvreAgenda():
 	f = open(fichier, 'r')
 	while True :
 		chaine = f.readline()
-		print(chaine)
-		if ("" == chaine):
-                        print("fin de fichier")
-                        f.close()
-                        break
+		#print(chaine)
+		if (chaine == ""):
+			f.close()
+			print("fin de fichier")
+			break
 		if (chaine[0] == "V"):
-			print(chaine[1:3])
-			#heureVeilleProchaine.replace(hour=int(chaine[1:3]))
-			#heureVeilleProchaine = datetime.strptime(chaine[1:5], '%H:%M')
+			heure = chaine[1:3]
+			min = chaine[4:6]
+			#print(heure, min)
+			hT = datetime.datetime(hC.year, hC.month, hC.day, int(heure), int(min))
+			print("heure Tempo",hT)
+			if (hT > hC):
+				return hT
 
-
-heureActuel = time.localtime()
-heureVeilleProchaine.clock_settime(CLOCK_REALTIME,time(23,01,01))
-print("heureA",heureActuel)
-#OuvreAgenda()
-print("heureVP",heureVeilleProchaine)
-
+hC = datetime.datetime.now()
+print("heureA",hC)
+hPV = OuvreAgenda()
+print("heurePV",hPV)
 # chercher heureProchaineVeille
-# 
+#
 # si heureCourante < heureProchaineVeille
 # 	ne rien faire
 # si heureCourante > heureProchaineVeille
 #	transmettre duree de veille
 #	shutdown
 #
-ser = serial.Serial('/dev/ttyS0', 9600, dsrdtr=0)
+#ser = serial.Serial('/dev/ttyS0', 9600, dsrdtr=0)
 line = 'bonjour\n'
-ser.write(line)
-ser.close()
-
+#ser.write(line)
+#ser.close()
