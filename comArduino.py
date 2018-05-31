@@ -33,8 +33,11 @@ class Consigne:
 				self.minDureeVeille = chaine[10:12]
 				hNow = datetime.datetime.now()
 				hPV = datetime.datetime(hNow.year, hNow.month, hNow.day, int(heure), int(min),0)
-				f.close()
-				return hPV
+				if hPV < hNow:
+					print("hPV < heure courante on va voir l'heure suivante")
+				else:
+					f.close()
+					return hPV
 
 
 
@@ -55,12 +58,14 @@ while True:
 	if hC < heureVeille:
 		print("heure courant", hC)
 		print("heure de veille", heureVeille)
-		time.sleep(5)
+		print("attend l'heure de veille")
+		time.sleep(8)
 	else:  		
 		print
 		print("transmission vers l'arduino")
 		print("duree de la veille",heureVeille)
-		time.sleep(5)
+		time.sleep(8)
+		exit
 		# si heureCourante > heure
 		# ProchaineVeille
 		#	transmettre duree de veille
