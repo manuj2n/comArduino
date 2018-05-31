@@ -11,11 +11,15 @@ class Consigne:
 
 	def __init__(self):
 		self.fichier = 'agenda.txt'
-		self.heureDureeVeille = ""
-		self.minDureeVeille = ""
+		self.heureDebutVeille = ""
+		self.minDeDebutVeille = ""
+		self.heureFinVeille = ""
+		self.minFinVeille = ""
 
 	def calculVeille(self):
-		duree = (int(self.heureDureeVeille) * 3600) + (int(self.minDureeVeille) * 60)
+		heureDV = (int(self.heureDebutVeille) * 3600) + (int(self.minDeDebutVeille) * 60)
+		heureFV = (int(self.heureFinVeille) * 3600) + (int(self.minFinVeille) * 60)
+		duree = heureFV - heureDV
 		return duree
 		
 	def OuvreAgenda(self):
@@ -27,36 +31,34 @@ class Consigne:
 				f.close()
 				break
 			if (chaine[0] == "V"):
-				heure = chaine[1:3]
-				min = chaine[4:6]
-				self.heureDureeVeille = chaine[7:9]
-				self.minDureeVeille = chaine[10:12]
+				self.heureDebutVeille = chaine[1:3]
+				self.minDeDebutVeille = chaine[4:6]
+				self.heureFinVeille = chaine[7:9]
+				self.minFinVeille = chaine[10:12]
 				hNow = datetime.datetime.now()
-				hPV = datetime.datetime(hNow.year, hNow.month, hNow.day, int(heure), int(min),0)
+				hPV = datetime.datetime(hNow.year, hNow.month, hNow.day, int(self.heureDebutVeille), int(self.minDeDebutVeille),0,0)
 				if hPV < hNow:
-					print("hPV < heure courante on va voir l'heure suivante")
+					print("heure courante < hPV on va voir l'heure suivante")
 				else:
 					f.close()
 					return hPV
 
-
-
-hC = datetime.datetime.now()
-print("heure Courante", hC)
+hCourante = datetime.datetime.now()
+print("heure Courante", hCourante)
 mesConsigne = Consigne()
 heureVeille = mesConsigne.OuvreAgenda()
 print("heure PV", heureVeille)
 dureeVeille = mesConsigne.calculVeille()
 print("duree veille",dureeVeille)
-pass
+
 if (heureVeille == None):
 	time.sleep(5)
 	# a voir, plus d'heure de veille avant le lendemain
 
 while True:
-	hC = datetime.datetime.now()
-	if hC < heureVeille:
-		print("heure courant", hC)
+	hCourante = datetime.datetime.now()
+	if hCourante < heureVeille:
+		print("heure courant", hCourante)
 		print("heure de veille", heureVeille)
 		print("attend l'heure de veille")
 		time.sleep(8)
