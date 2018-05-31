@@ -17,7 +17,7 @@ class Consigne:
 		self.minFinVeille = ""
 
 	def calculVeille(self):
-		heureDV = (int(self.heureDebutVeille) * 3600) + (int(self.minDeDebutVeille) * 60)
+		heureDV = (int(self.heureDebutVeille) * 3600) + (int(self.minDeDebutVeille) * 60) # calculer par rapport a l'heure courante
 		heureFV = (int(self.heureFinVeille) * 3600) + (int(self.minFinVeille) * 60)
 		duree = heureFV - heureDV
 		return duree
