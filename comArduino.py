@@ -29,7 +29,9 @@ class Consigne:
 			#print(chaine)
 			if (chaine == ""):
 				f.close()
-				break
+				hNow = datetime.datetime.now()
+				hPV = datetime.datetime(hNow.year, hNow.month, hNow.day, int(self.heureDebutVeille), int(self.minDeDebutVeille),0,0)					
+				return hPV
 			if (chaine[0] == "V"):
 				self.heureDebutVeille = chaine[1:3]
 				self.minDeDebutVeille = chaine[4:6]
@@ -65,7 +67,8 @@ while True:
 	else:  		
 		print
 		print("transmission vers l'arduino")
-		print("duree de la veille",heureVeille)
+		print("heure de la veille",heureVeille)
+		print("duree de la veille",dureeVeille)
 		time.sleep(8)
 		exit
 		# si heureCourante > heure
