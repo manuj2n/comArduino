@@ -7,55 +7,58 @@ import datetime
 import time
 #import serial
 
-hT = datetime.time(0, 0, 0)
-hPV = datetime.time(0, 0, 0)
-dureeVeille = 0
-fichier = 'agenda.txt'
+class Consigne:
 
-def calculVeille(heures, minutes):
-	duree = (heures * 3600) + (minutes * 60)
-	return duree
+	def __init__(self):
+		self.fichier = 'agenda.txt'
+		self.hPV = datetime.datetime.now() #heure prochaine veille
+		self.hNow = datetime.datetime.now() #heure actuelle
+		self.duree = 0 # duree en secondes
 
-def OuvreAgenda():
-	f = open(fichier, 'r')
-	while True:
-		chaine = f.readline()
-		#print(chaine)
-		if (chaine == ""):
-			f.close()
-			break
-		if (chaine[0] == "V"):
-			heure = chaine[1:3]
-			min = chaine[4:6]
-			#print(heure, min)
-			heureDureeVeille = chaine[7:9]
-			minDureeVeille = chaine[10:12]
-			dureeVeille = calculVeille(int(heureDureeVeille), int(minDureeVeille))
-			print("Duree de Veille en secondes", heureDureeVeille, minDureeVeille, dureeVeille)
-			hT = datetime.datetime(hC.year, hC.month, hC.day, int(heure), int(min))
-			print("heure Tempo", hT)
-			print("Temps d'attente pour ma veille", hT - hC)
-			if (hT > hC):
+	def calculVeille(self,heures, minutes):
+		self.duree = (int(heures) * 3600) + (int(minutes) * 60)
+		
+	def OuvreAgenda(self):
+		f = open(self.fichier, 'r')
+		while True:
+			chaine = f.readline()
+			#print(chaine)
+			if (chaine == ""):
 				f.close()
-				return hT
+				break
+			if (chaine[0] == "V"):
+				heure = chaine[1:3]
+				min = chaine[4:6]
+				heureDureeVeille = chaine[7:9]
+				minDureeVeille = chaine[10:12]
+				self.calculVeille(heureDureeVeille,minDureeVeille)
+				self.hNow = datetime.datetime.now()
+				self.hPV = datetime.datetime(self.hNow.year, self.hNow.month, self.hNow.day, int(heure), int(min))
+				f.close()
+
+
 
 hC = datetime.datetime.now()
 print("heure Courante", hC)
-hPV = OuvreAgenda()
-if (hPV == None):
+mesConsigne = Consigne()
+print("heure Now", mesConsigne.hNow)
+print("heure PV", mesConsigne.hPV)
+print("duree veille",mesConsigne.duree)
+pass
+if (mesConsigne.hPV == None):
 	time.sleep(5)
 	# a voir, plus d'heure de veille avant le lendemain
-print("heure Prochaine Veille", hPV)
+print("heure Prochaine Veille", mesConsigne.hPV)
 while True:
 	hC = datetime.datetime.now()
-	if hC < hPV:
+	if hC < mesConsigne.hPV:
 		print("heure courant", hC)
-		print("heure de veille", hPV)
+		print("heure de veille", mesConsigne.hPV)
 		time.sleep(5)
 	else:  		
 		print
 		print("transmission vers l'arduino")
-		print("duree de la veille",dureeVeille)
+		print("duree de la veille",mesConsigne.duree)
 		time.sleep(5)
 		# si heureCourante > heure
 		# ProchaineVeille
