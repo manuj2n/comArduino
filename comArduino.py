@@ -11,12 +11,12 @@ class Consigne:
 
 	def __init__(self):
 		self.fichier = 'agenda.txt'
-		self.hPV = datetime.datetime.now() #heure prochaine veille
-		self.hNow = datetime.datetime.now() #heure actuelle
-		self.duree = 0 # duree en secondes
+		self.heureDureeVeille = ""
+		self.minDureeVeille = ""
 
-	def calculVeille(self,heures, minutes):
-		self.duree = (int(heures) * 3600) + (int(minutes) * 60)
+	def calculVeille(self):
+		duree = (int(self.heureDureeVeille) * 3600) + (int(self.minDureeVeille) * 60)
+		return duree
 		
 	def OuvreAgenda(self):
 		f = open(self.fichier, 'r')
@@ -29,36 +29,37 @@ class Consigne:
 			if (chaine[0] == "V"):
 				heure = chaine[1:3]
 				min = chaine[4:6]
-				heureDureeVeille = chaine[7:9]
-				minDureeVeille = chaine[10:12]
-				self.calculVeille(heureDureeVeille,minDureeVeille)
-				self.hNow = datetime.datetime.now()
-				self.hPV = datetime.datetime(self.hNow.year, self.hNow.month, self.hNow.day, int(heure), int(min))
+				self.heureDureeVeille = chaine[7:9]
+				self.minDureeVeille = chaine[10:12]
+				hNow = datetime.datetime.now()
+				hPV = datetime.datetime(hNow.year, hNow.month, hNow.day, int(heure), int(min),0)
 				f.close()
+				return hPV
 
 
 
 hC = datetime.datetime.now()
 print("heure Courante", hC)
 mesConsigne = Consigne()
-print("heure Now", mesConsigne.hNow)
-print("heure PV", mesConsigne.hPV)
-print("duree veille",mesConsigne.duree)
+heureVeille = mesConsigne.OuvreAgenda()
+print("heure PV", heureVeille)
+dureeVeille = mesConsigne.calculVeille()
+print("duree veille",dureeVeille)
 pass
-if (mesConsigne.hPV == None):
+if (heureVeille == None):
 	time.sleep(5)
 	# a voir, plus d'heure de veille avant le lendemain
-print("heure Prochaine Veille", mesConsigne.hPV)
+
 while True:
 	hC = datetime.datetime.now()
-	if hC < mesConsigne.hPV:
+	if hC < heureVeille:
 		print("heure courant", hC)
-		print("heure de veille", mesConsigne.hPV)
+		print("heure de veille", heureVeille)
 		time.sleep(5)
 	else:  		
 		print
 		print("transmission vers l'arduino")
-		print("duree de la veille",mesConsigne.duree)
+		print("duree de la veille",heureVeille)
 		time.sleep(5)
 		# si heureCourante > heure
 		# ProchaineVeille
