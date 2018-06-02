@@ -1,11 +1,13 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-#
+# manuj2n
 # comArduino
 
 import datetime
 import time
-#import serial
+import sys
+import serial
+import os
 
 class Consigne:
 
@@ -38,44 +40,74 @@ class Consigne:
 				#hNow = datetime.datetime.now()
 				#hPV = datetime.datetime(hNow.year, hNow.month, hNow.day, int(hDV), int(mDV),0,0)
 
+def TransRS232(commande):
+	line = "STOP:" + str(commande)
+	print(line)
+	#ser = serial.Serial('/dev/ttyS0', 9600, dsrdtr=0)
+	#ser.write(line)
+	#ser.close() '''
 
-hC = datetime.datetime.now()
-print("heure Courante", hC)
-heureCourante = int(hC.hour * 3600) + int(hC.minute * 60) + int(hC.second)
-print("heure Courante Secondes", heureCourante)
+def HeureCouranteSeconde():
+	hC = datetime.datetime.now()
+	#print("heure Courante", hC)
+	heureCourante = int(hC.hour * 3600) + int(hC.minute * 60) + int(hC.second)
+	return heureCourante
+
+
+# debut du programme
+''' test si le fichier agenda.txt existe.
+test s'il contient des lignes valides '''
+
+try:
+	f = open('agenda.txt', 'r')
+except:
+	print("erreur de fichier")
+	print("quitte le programme")
+	sys.exit(0)
+else:
+	f.close()
+
+print("heure Courante Secondes", HeureCouranteSeconde())
 mesConsigne = Consigne()
 heureVeille = mesConsigne.OuvreAgenda()
 print("index", mesConsigne.indexTableau)
 print(mesConsigne.tableauVeille)
 
-''' print("heure PV", heureVeille)
-dureeVeille = mesConsigne.calculVeille()
-print("duree veille",dureeVeille)
-
-if (heureVeille == None):
-	time.sleep(5)
-	# a voir, plus d'heure de veille avant le lendemain
-
-while True:
-	hCourante = datetime.datetime.now()
-	if hCourante < heureVeille:
-		print("heure courant", hCourante)
-		print("heure de veille", heureVeille)
-		print("attend l'heure de veille")
-		time.sleep(8)
-	else:  		
-		print
-		print("transmission vers l'arduino")
-		print("heure de la veille",heureVeille)
-		print("duree de la veille",dureeVeille)
-		time.sleep(8)
-		exit '''
-		# si heureCourante > heure
-		# ProchaineVeille
-		#	transmettre duree de veille
-		#	shutdown
+i = 0
+while i < mesConsigne.indexTableau:
+	print(mesConsigne.tableauVeille[i][0])
+	# l'heure courante tombe dans un creneau de veille
+	if (HeureCouranteSeconde() > mesConsigne.tableauVeille[i][0]) and (HeureCouranteSeconde() < mesConsigne.tableauVeille[i][1]):
+		print("heureCourante dans le range :",mesConsigne.tableauVeille[i][0:2])
+		print("heureCourante :",HeureCouranteSeconde())
+		tempsRestantVeille = mesConsigne.tableauVeille[i][1] - HeureCouranteSeconde()
+		print("temps de veille restant :", tempsRestantVeille)
 		#
-		#ser = serial.Serial('/dev/ttyS0', 9600, dsrdtr=0)
-		#line = "bonjour"
-		#ser.write(line)
-		#ser.close()
+		# transmission du temps de veille restant a l'arduino
+		TransRS232(tempsRestantVeille)
+		# command "shutdown"
+		os.execl("/bin/ls", "arg1")
+		# on quitte le programme le programme
+		sys.exit(0)
+	if (HeureCouranteSeconde() < mesConsigne.tableauVeille[i][0]) and (HeureCouranteSeconde() < mesConsigne.tableauVeille[i][1]):
+		print("heureCourante dans une phase de reveil :",mesConsigne.tableauVeille[i][0])
+		print("heureCourante :",HeureCouranteSeconde())
+		tempsRestantReveille = mesConsigne.tableauVeille[i][0] - HeureCouranteSeconde()
+		print("temps de reveil restant :", tempsRestantReveille)
+		while (HeureCouranteSeconde() < mesConsigne.tableauVeille[i][0]):
+    		# on est dans un creneau de fonctionnement, on cherche la prochaine heure de veille
+			time.sleep(1)
+			pass
+		print("Cest la fin de la phase de reveil :",mesConsigne.tableauVeille[i][0])
+		print("heureCourante :",HeureCouranteSeconde())
+ 		tempsRestantVeille = mesConsigne.tableauVeille[i][1] - HeureCouranteSeconde()
+		print("temps de veille restant :", tempsRestantVeille)
+		#
+		# transmission du temps de veille restant a l'arduino
+		TransRS232(tempsRestantVeille)
+		# command "shutdown"   	
+		# et on attend que l'heure arrive pour passer en veille
+		sys.exit(0)
+	i += 1
+
+
