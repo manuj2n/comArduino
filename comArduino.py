@@ -55,17 +55,14 @@ def HeureCouranteSeconde():
 
 
 # debut du programme
-''' test si le fichier agenda.txt existe.
-test s'il contient des lignes valides '''
-
+# test si le fichier agenda.txt existe.
 try:
 	f = open('agenda.txt', 'r')
+	f.close()
 except:
 	print("erreur de fichier")
 	print("quitte le programme")
 	sys.exit(0)
-else:
-	f.close()
 
 print("heure Courante Secondes", HeureCouranteSeconde())
 mesConsigne = Consigne()
@@ -86,7 +83,7 @@ while i < mesConsigne.indexTableau:
 		# transmission du temps de veille restant a l'arduino
 		TransRS232(tempsRestantVeille)
 		# command "shutdown"
-		os.execl("/bin/ls", "arg1")
+		os.system("sudo shutdown -h now")
 		# on quitte le programme le programme
 		sys.exit(0)
 	if (HeureCouranteSeconde() < mesConsigne.tableauVeille[i][0]) and (HeureCouranteSeconde() < mesConsigne.tableauVeille[i][1]):
@@ -105,7 +102,8 @@ while i < mesConsigne.indexTableau:
 		#
 		# transmission du temps de veille restant a l'arduino
 		TransRS232(tempsRestantVeille)
-		# command "shutdown"   	
+		# command "shutdown"
+		os.system("sudo shutdown -h now")   	
 		# et on attend que l'heure arrive pour passer en veille
 		sys.exit(0)
 	i += 1
