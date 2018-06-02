@@ -11,16 +11,9 @@ class Consigne:
 
 	def __init__(self):
 		self.fichier = 'agenda.txt'
-		self.heureDebutVeille = ""
-		self.minDeDebutVeille = ""
-		self.heureFinVeille = ""
-		self.minFinVeille = ""
-
-	def calculVeille(self):
-		heureDV = (int(self.heureDebutVeille) * 3600) + (int(self.minDeDebutVeille) * 60) # calculer par rapport a l'heure courante
-		heureFV = (int(self.heureFinVeille) * 3600) + (int(self.minFinVeille) * 60)
-		duree = heureFV - heureDV
-		return duree
+		self.ligneVeille = []
+		self.tableauVeille = []
+		self.indexTableau = 0
 		
 	def OuvreAgenda(self):
 		f = open(self.fichier, 'r')
@@ -28,28 +21,34 @@ class Consigne:
 			chaine = f.readline()
 			#print(chaine)
 			if (chaine == ""):
-				f.close()
-				hNow = datetime.datetime.now()
-				hPV = datetime.datetime(hNow.year, hNow.month, hNow.day, int(self.heureDebutVeille), int(self.minDeDebutVeille),0,0)					
-				return hPV
+				f.close()					
+				return
 			if (chaine[0] == "V"):
-				self.heureDebutVeille = chaine[1:3]
-				self.minDeDebutVeille = chaine[4:6]
-				self.heureFinVeille = chaine[7:9]
-				self.minFinVeille = chaine[10:12]
-				hNow = datetime.datetime.now()
-				hPV = datetime.datetime(hNow.year, hNow.month, hNow.day, int(self.heureDebutVeille), int(self.minDeDebutVeille),0,0)
-				if hPV < hNow:
-					print("heure courante < hPV on va voir l'heure suivante")
-				else:
-					f.close()
-					return hPV
+				hDV = chaine[1:3]
+				mDV = chaine[4:6]
+				hFV = chaine[7:9]
+				mFV = chaine[10:12]
+				heureDebutV = (int(hDV) * 3600) + (int(mDV) * 60)
+				heureFinV = (int(hFV) * 3600) + (int(mFV) * 60)
+				duree = heureFinV - heureDebutV
+				self.ligneVeille = (heureDebutV, heureFinV, duree)
+				self.tableauVeille.append(self.ligneVeille)
+				self.indexTableau += 1
 
-hCourante = datetime.datetime.now()
-print("heure Courante", hCourante)
+				#hNow = datetime.datetime.now()
+				#hPV = datetime.datetime(hNow.year, hNow.month, hNow.day, int(hDV), int(mDV),0,0)
+
+
+hC = datetime.datetime.now()
+print("heure Courante", hC)
+heureCourante = int(hC.hour * 3600) + int(hC.minute * 60) + int(hC.second)
+print("heure Courante Secondes", heureCourante)
 mesConsigne = Consigne()
 heureVeille = mesConsigne.OuvreAgenda()
-print("heure PV", heureVeille)
+print("index", mesConsigne.indexTableau)
+print(mesConsigne.tableauVeille)
+
+''' print("heure PV", heureVeille)
 dureeVeille = mesConsigne.calculVeille()
 print("duree veille",dureeVeille)
 
@@ -70,7 +69,7 @@ while True:
 		print("heure de la veille",heureVeille)
 		print("duree de la veille",dureeVeille)
 		time.sleep(8)
-		exit
+		exit '''
 		# si heureCourante > heure
 		# ProchaineVeille
 		#	transmettre duree de veille
