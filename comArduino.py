@@ -83,7 +83,7 @@ while i < mesConsigne.indexTableau:
 		# transmission du temps de veille restant a l'arduino
 		TransRS232(tempsRestantVeille)
 		# command "shutdown"
-# !!! #		os.system("sudo shutdown -h now")
+		os.system("sudo shutdown -h now")
 		# on quitte le programme le programme
 		sys.exit(0)
 	if (HeureCouranteSeconde() < mesConsigne.tableauVeille[i][0]) and (HeureCouranteSeconde() < mesConsigne.tableauVeille[i][1]):
@@ -103,7 +103,7 @@ while i < mesConsigne.indexTableau:
 		# transmission du temps de veille restant a l'arduino
 		TransRS232(tempsRestantVeille)
 		# command "shutdown"
-# !!! #		os.system("sudo shutdown -h now")  	
+		os.system("sudo shutdown -h now")  	
 		# et on attend que l'heure arrive pour passer en veille
 		sys.exit(0)
 	i += 1
