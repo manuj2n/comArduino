@@ -43,7 +43,7 @@ class Consigne:
 def TransRS232(commande):
 	line = "STOP:" + str(commande) + '\n'
 	print(line)
-	ser = serial.Serial('/dev/ttyS0', 9600, dsrdtr=0)
+ 	ser = serial.Serial('/dev/ttyS0', 9600, dsrdtr=0)
 	ser.write(line)
 	ser.close()
 
@@ -83,7 +83,7 @@ while i < mesConsigne.indexTableau:
 		# transmission du temps de veille restant a l'arduino
 		TransRS232(tempsRestantVeille)
 		# command "shutdown"
-		# # # # # # # os.system("sudo shutdown -h now")
+		os.system("sudo shutdown -h now")
 		# on quitte le programme le programme
 		sys.exit(0)
 	if (HeureCouranteSeconde() < mesConsigne.tableauVeille[i][0]) and (HeureCouranteSeconde() < mesConsigne.tableauVeille[i][1]):
@@ -98,12 +98,12 @@ while i < mesConsigne.indexTableau:
 		print("Cest la fin de la phase de reveil :",mesConsigne.tableauVeille[i][0])
 		print("heureCourante :",HeureCouranteSeconde())
  		tempsRestantVeille = mesConsigne.tableauVeille[i][1] - HeureCouranteSeconde()
-		print("temps de veille restant :", tempsRestantVeille)
+		print("temps de veille a venir :", tempsRestantVeille)
 		#
 		# transmission du temps de veille restant a l'arduino
 		TransRS232(tempsRestantVeille)
 		# command "shutdown"
-		# # # # # # # os.system("sudo shutdown -h now")  	
+		os.system("sudo shutdown -h now")  	
 		# et on attend que l'heure arrive pour passer en veille
 		sys.exit(0)
 	i += 1
