@@ -25,6 +25,26 @@ class Consigne:
 			if (chaine == ""):
 				f.close()					
 				return
+			if (chaine[0] == "D"):
+				tempsDepartDiffere = chaine[1:3]
+				departDiffSecondes = int(tempsDepartDiffere) * 3600
+				t = open('tmp.txt','w')
+				while True:
+					chaine = f.readline()
+					if (chaine == ""):
+						f.close()
+						t.close()
+						os.remove('agenda.txt')
+						os.rename('tmp.txt','agenda.txt')
+						print("Transmet le temps de veille : ",departDiffSecondes)
+						print(departDiffSecondes)
+						# Transmet le temps de veille a Arduino
+						TransRS232(departDiffSecondes)
+						# Shutdown
+						os.system("sudo shutdown -h now")
+						exit(0)
+					t.write(chaine)
+
 			if (chaine[0] == "V"):
 				hDV = chaine[1:3]
 				mDV = chaine[4:6]
@@ -36,7 +56,6 @@ class Consigne:
 				self.ligneVeille = (heureDebutV, heureFinV, duree)
 				self.tableauVeille.append(self.ligneVeille)
 				self.indexTableau += 1
-
 				#hNow = datetime.datetime.now()
 				#hPV = datetime.datetime(hNow.year, hNow.month, hNow.day, int(hDV), int(mDV),0,0)
 
