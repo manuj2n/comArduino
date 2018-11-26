@@ -72,7 +72,6 @@ def HeureCouranteSeconde():
 	heureCourante = int(hC.hour * 3600) + int(hC.minute * 60) + int(hC.second)
 	return heureCourante
 
-
 # debut du programme
 # test si le fichier agenda.txt existe.
 try:
